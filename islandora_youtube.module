@@ -1,0 +1,55 @@
+<?php
+
+/**
+ * Islandora YouTube
+ *
+ * Lets you "ingest" a YouTube video and display it.
+ */
+
+function islandora_youtube_islandora_required_objects(IslandoraTuque $connection) {
+  $module_path = drupal_get_path('module', 'islandora_youtube');
+  // Youtube Video Content Model.
+  $youtube_content_model = $connection->repository->constructObject('islandora:sp_youtubeCModel');
+  $youtube_content_model->owner = 'fedoraAdmin';
+  $youtube_content_model->label = 'Islandora YouTube Content Model';
+  $youtube_content_model->models = 'fedora-system:ContentModel-3.0';
+  // ISLANDORACM Datastream.
+  $datastream = $youtube_content_model->constructDatastream('ISLANDORACM', 'X');
+  $datastream->label = 'Islandora content model';
+  $datastream->mimetype = 'text/xml';
+  $datastream->setContentFromFile("$module_path/xml/islandora_youtube_cmodel.xml", FALSE);
+  $youtube_content_model->ingestDatastream($datastream);
+  // DS-COMPOSITE-MODEL Datastream.
+  $datastream = $youtube_content_model->constructDatastream('DS-COMPOSITE-MODEL', 'X');
+  $datastream->label = 'DS-COMPOSITE-MODEL';
+  $datastream->mimetype = 'text/xml';
+  $datastream->setContentFromFile("$module_path/xml/islandora_youtube_ds_composite_model.xml", FALSE);
+  $youtube_content_model->ingestDatastream($datastream);
+  // Youtube Collection.
+  $youtube_collection = $connection->repository->constructObject('islandora:youtube_collection');
+  $youtube_collection->owner = 'fedoraAdmin';
+  $youtube_collection->label = 'YouTube Video Collection';
+  $youtube_collection->models = 'islandora:collectionCModel';
+  $youtube_collection->relationships->add(FEDORA_RELS_EXT_URI, 'isMemberOfCollection', 'islandora:root');
+  // Collection Policy Datastream.
+  $datastream = $youtube_collection->constructDatastream('COLLECTION_POLICY', 'X');
+  $datastream->label = 'Collection policy';
+  $datastream->mimetype = 'text/xml';
+  $datastream->setContentFromFile("$module_path/xml/islandora_youtube_collection_policy.xml", FALSE);
+  $youtube_collection->ingestDatastream($datastream);
+  // TN Datastream.
+  $datastream = $youtube_collection->constructDatastream('TN', 'M');
+  $datastream->label = 'Thumbnail';
+  $datastream->mimetype = 'image/png';
+  $datastream->setContentFromFile("$module_path/images/folder.png", FALSE);
+  $youtube_collection->ingestDatastream($datastream);
+  return array(
+    'islandora_youtube' => array(
+      'title' => 'Islandora Youtube',
+      'objects' => array(
+        $youtube_content_model,
+        $youtube_collection,
+      ),
+    ),
+  );
+}
