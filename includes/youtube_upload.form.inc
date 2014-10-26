@@ -50,4 +50,6 @@ function islandora_youtube_upload_form_submit(array $form, array &$form_state) {
   $ds->url = $path;
   $ds->label = 'Youtube Video';
   $ds->mimetype = 'text/plain';
+
+  # to get the info use http://gdata.youtube.com/feeds/api/videos/g_G4gHRc-M4
 }
