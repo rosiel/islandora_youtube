@@ -1,0 +1,24 @@
+<?php
+
+/**
+ * @file
+ * islandora_youtube.install
+ */
+
+/**
+ * Implements hook_install().
+ *
+ * @see islandora_youtube_islandora_required_objects()
+ */
+function islandora_youtube_install() {
+  module_load_include('inc', 'islandora', 'includes/solution_packs');
+  islandora_install_solution_pack('islandora_youtube');
+}
+
+/**
+ * Implements hook_uninstall().
+ */
+function islandora_youtube_uninstall() {
+  module_load_include('inc', 'islandora', 'includes/solution_packs');
+  islandora_install_solution_pack('islandora_youtube', 'uninstall');
+}
